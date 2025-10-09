@@ -1,5 +1,6 @@
 package com.Tulip_Tech.OrderService.entity;
 
+import com.Tulip_Tech.OrderService.model.Payment_Mode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -35,4 +36,7 @@ public class OrderEntity {
 
     @Setter
     private Long amount;
+
+    @Getter
+    private Payment_Mode paymentMode;
 }

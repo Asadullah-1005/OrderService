@@ -1,6 +1,6 @@
 package com.Tulip_Tech.OrderService.controller;
 
-import com.Tulip_Tech.OrderService.model.CreateOrderRequest;
+import com.Tulip_Tech.OrderService.model.Dto.CreateOrderRequest;
 import com.Tulip_Tech.OrderService.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

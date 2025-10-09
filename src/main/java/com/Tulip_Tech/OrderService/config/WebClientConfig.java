@@ -20,9 +20,17 @@ public class WebClientConfig {
     @Value("${product.service.url}")
     private String productServiceUrl;
 
+    @Value("${payment.service.url}")
+    private String paymentServiceUrl;
+
     @Bean
     public WebClient productWebClient(WebClient.Builder builder) {
         return builder.baseUrl(productServiceUrl).filter(errorDecoderFilter()).build();
+    }
+
+    @Bean
+    public WebClient paymentWebClient(WebClient.Builder builder) {
+        return builder.baseUrl(paymentServiceUrl).filter(errorDecoderFilter()).build();
     }
 
     private ExchangeFilterFunction errorDecoderFilter() {
