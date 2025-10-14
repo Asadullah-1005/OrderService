@@ -1,10 +1,7 @@
 package com.Tulip_Tech.OrderService.entity;
 
 import com.Tulip_Tech.OrderService.model.Payment_Mode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
@@ -23,6 +20,7 @@ public class OrderEntity {
     private Long orderId;
 
     @Setter
+    @Column(name = "product_id")
     private Long productId;
 
     @Setter
@@ -35,8 +33,9 @@ public class OrderEntity {
     private Instant orderDate;
 
     @Setter
-    private Long amount;
+    private Long totalAmount;
 
-    @Getter
-    private Payment_Mode paymentMode;
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private Payment_Mode payment_mode;
 }
