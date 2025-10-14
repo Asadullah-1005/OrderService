@@ -5,9 +5,10 @@ import com.Tulip_Tech.OrderService.client.PaymentServiceClient;
 import com.Tulip_Tech.OrderService.client.ProductServiceClient;
 import com.Tulip_Tech.OrderService.entity.OrderEntity;
 import com.Tulip_Tech.OrderService.exception.CustomException;
+import com.Tulip_Tech.OrderService.mapper.OrderMapper;
 import com.Tulip_Tech.OrderService.model.Dto.CreateOrderRequest;
 import com.Tulip_Tech.OrderService.model.Dto.CreatePaymentRequest;
-import com.Tulip_Tech.OrderService.model.Payment_Mode;
+import com.Tulip_Tech.OrderService.model.domain.Order;
 import com.Tulip_Tech.OrderService.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -25,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductServiceClient productServiceClient;
     private final PaymentServiceClient paymentServiceClient;
+    private final OrderMapper orderMapper;
 
     @Override
     public ResponseEntity<?> placeOrder(CreateOrderRequest createOrderRequest) {
@@ -37,11 +40,11 @@ public class OrderServiceImpl implements OrderService {
 
             log.info("Product quantity reduced successfully for productId: {}", createOrderRequest.productId());
 
-            OrderEntity orderEntity = createOrderEntity(createOrderRequest);
+            OrderEntity orderEntity = orderMapper.createOrderEntity(createOrderRequest);
             orderRepository.save(orderEntity);
 
             log.info("calling payment service to complete the payment");
-            CreatePaymentRequest request = new CreatePaymentRequest(orderEntity.getOrderId(),orderEntity.getAmount(), orderEntity.getPaymentMode(),"Me");
+            CreatePaymentRequest request = new CreatePaymentRequest(orderEntity.getOrderId(),orderEntity.getTotalAmount(), orderEntity.getPayment_mode(),"Me");
             paymentServiceClient.doPayment(request);
 
             log.info("Order Placed with orderId={}", orderEntity);
@@ -57,7 +60,9 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private OrderEntity createOrderEntity(CreateOrderRequest request) {
-        return OrderEntity.builder().productId(request.productId()).amount(request.totalAmount()).quantity(request.quantity()).orderStatus("CREATED").orderDate(Instant.now()).build();
+    @Override
+    public List<Order> getAll() {
+        List<OrderEntity> orderEntities = orderRepository.findAll();
+        return orderEntities.stream().map(orderMapper::EntityToOrder).toList();
     }
 }
