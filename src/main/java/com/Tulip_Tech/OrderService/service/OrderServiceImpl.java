@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -44,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(orderEntity);
 
             log.info("calling payment service to complete the payment");
-            CreatePaymentRequest request = new CreatePaymentRequest(orderEntity.getOrderId(),orderEntity.getTotalAmount(), orderEntity.getPayment_mode(),"Me");
+            CreatePaymentRequest request = new CreatePaymentRequest(orderEntity.getOrderId(), orderEntity.getTotalAmount(), orderEntity.getPayment_mode(), "Me");
             paymentServiceClient.doPayment(request);
 
             log.info("Order Placed with orderId={}", orderEntity);
@@ -63,6 +62,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAll() {
         List<OrderEntity> orderEntities = orderRepository.findAll();
-        return orderEntities.stream().map(orderMapper::EntityToOrder).toList();
+
+        return orderEntities.parallelStream().map(orderEntity -> {
+            Order order = orderMapper.EntityToOrder(orderEntity);
+
+            try {
+                Order.ProductDetails productDetails = productServiceClient.getProductById(orderEntity.getProductId());
+                order.setProductDetails(productDetails);
+            } catch (Exception ex) {
+                log.error("Error occurred while fetching product details for productId {}: {}", orderEntity.getProductId(), ex.getMessage());
+                order.setProductDetails(null);
+            }
+            return order;
+        }).toList();
     }
 }

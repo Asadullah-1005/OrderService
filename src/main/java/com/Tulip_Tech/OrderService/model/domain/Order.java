@@ -13,11 +13,24 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
-    private Long id;
+    private Long orderId;
     private Long productId;
     private Long quantity;
     private Instant orderDate;
-    private Long amount;
-    private Payment_Mode paymentMode;
+    private Long totalAmount;
+    private Payment_Mode payment_mode;
+    private ProductDetails productDetails;
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ProductDetails {
+
+        private Long id;
+        private String productName;
+        private long price;
+        private long quantity;
+    }
 
 }
