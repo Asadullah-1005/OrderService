@@ -17,6 +17,7 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "order_id")
     private Long orderId;
 
     @Setter
@@ -24,18 +25,23 @@ public class OrderEntity {
     private Long productId;
 
     @Setter
+    @Column(name = "quantity")
     private Long quantity;
 
     @Setter
+    @Column(name = "order_status")
     private String orderStatus;
 
     @Setter
+    @Column(name = "order_date")
     private Instant orderDate;
 
     @Setter
+    @Column(name = "total_amount")
     private Long totalAmount;
 
     @Setter
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_mode")
     private Payment_Mode payment_mode;
 }
