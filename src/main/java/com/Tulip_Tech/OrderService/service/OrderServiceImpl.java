@@ -73,6 +73,13 @@ public class OrderServiceImpl implements OrderService {
                 log.error("Error occurred while fetching product details for productId {}: {}", orderEntity.getProductId(), ex.getMessage());
                 order.setProductDetails(null);
             }
+
+            try {
+                order.setPaymentDetails(paymentServiceClient.getPaymentByOrderId(orderEntity.getOrderId()));
+            }catch (Exception ex) {
+                log.error("Error occurred while fetching payment details for orderId {}: {}", orderEntity.getOrderId(), ex.getMessage());
+                order.setPaymentDetails(null);
+            }
             return order;
         }).toList();
     }

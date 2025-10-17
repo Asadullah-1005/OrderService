@@ -20,6 +20,7 @@ public class Order {
     private Long totalAmount;
     private Payment_Mode payment_mode;
     private ProductDetails productDetails;
+    private PaymentDetails paymentDetails;
 
     @Setter
     @Getter
@@ -31,6 +32,20 @@ public class Order {
         private String productName;
         private long price;
         private long quantity;
+    }
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PaymentDetails {
+
+        private Long id;
+        private Long orderId;
+        private Payment_Mode paymentMode;
+        private String referenceNumber;
+        private Instant paymentDate;
+        private String paymentStatus;
+        private Long amount;
     }
 
 }
